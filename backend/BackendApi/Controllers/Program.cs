@@ -1,33 +1,22 @@
-namespace BackendApi.Controllers
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+using Microsoft.EntityFrameworkCore;
+using BackendApi.Data;
 
-            // Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite("Data Source=backendapi.db"));
 
-            var app = builder.Build();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-            }
+var app = builder.Build();
 
-            app.UseHttpsRedirection();
+app.UseSwagger();
+app.UseSwaggerUI();
 
-            app.UseAuthorization();
+app.MapGet("/", () => "Hello world");
 
+app.MapControllers();
 
-            app.MapControllers();
-
-            app.Run();
-        }
-    }
-}
+app.Run();
