@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BackendApi.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,8 +20,6 @@ namespace BackendApi.Migrations
                     ValorInicial = table.Column<decimal>(type: "TEXT", nullable: false),
                     Dias = table.Column<int>(type: "INTEGER", nullable: false),
                     TaxaAnual = table.Column<decimal>(type: "TEXT", nullable: false),
-                    RendimentoBruto = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Imposto = table.Column<decimal>(type: "TEXT", nullable: false),
                     Liquido = table.Column<decimal>(type: "TEXT", nullable: false),
                     DataConsulta = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },

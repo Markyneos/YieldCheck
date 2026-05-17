@@ -29,13 +29,7 @@ namespace BackendApi.Migrations
                     b.Property<int>("Dias")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Imposto")
-                        .HasColumnType("TEXT");
-
                     b.Property<decimal>("Liquido")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("RendimentoBruto")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("TaxaAnual")

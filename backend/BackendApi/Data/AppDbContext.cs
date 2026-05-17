@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BackendApi.Models;
 
-namespace BackendApi.Data
-{
+namespace BackendApi.Data;
+
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
@@ -13,4 +13,4 @@ namespace BackendApi.Data
 
         public DbSet<Simulacao> Simulacoes { get; set; }
     }
-}
+

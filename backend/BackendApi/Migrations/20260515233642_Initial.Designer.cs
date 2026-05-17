@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackendApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260511131728_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260515233642_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,13 +32,7 @@ namespace BackendApi.Migrations
                     b.Property<int>("Dias")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Imposto")
-                        .HasColumnType("TEXT");
-
                     b.Property<decimal>("Liquido")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("RendimentoBruto")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("TaxaAnual")
