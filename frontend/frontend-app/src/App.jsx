@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 function App() {
@@ -6,6 +6,11 @@ function App() {
   const [dias, setDias] = useState('')
   const [taxaAnual, setTaxaAnual] = useState('')
   const [resultado, setResultado] = useState(null)
+  const [historico, setHistorico] = useState([])
+
+  useEffect(() => {
+    carregarHistorico()
+  }, [])
 
   async function calcular() {
     const response = await fetch('http://localhost:5000/api/simulacao', {
@@ -22,10 +27,19 @@ function App() {
 
     const data = await response.json()
     setResultado(data)
+    carregarHistorico()
+  }
+
+  async function carregarHistorico() {
+    const response = await fetch('http://localhost:5000/api/simulacao')
+
+    const data = await response.json()
+
+    setHistorico(data)
   }
 
   return (
-    <div style={{ padding: '40px' }}>
+    <div className='container'>
       <h1>YieldCheck</h1>
 
       <input
@@ -34,32 +48,65 @@ function App() {
         onChange={(e) => setValorInicial(e.target.value)}
       />
 
-      <br /><br />
-
       <input
         placeholder='Dias'
         value={dias}
         onChange={(e) => setDias(e.target.value)}
       />
 
-      <br /><br />
-
       <input
-        placeholder='Taxa Anual'
+        placeholder='Taxa Anual (%)'
         value={taxaAnual}
         onChange={(e) => setTaxaAnual(e.target.value)}
       />
 
-      <br /><br />
-
-      <button onClick={calcular}>Calcular</button>
+      <button onClick={calcular}>
+        Calcular
+      </button>
 
       {resultado && (
-        <div>
+        <div className='resultado'>
           <h2>Resultado</h2>
-          <p>Liquido: R$ {resultado.liquido}</p>
+
+          <p>
+            Valor Líquido:
+            <strong>
+              {' '}
+              R$ {resultado.liquido}
+            </strong>
+          </p>
         </div>
       )}
+
+      <h2>Histórico</h2>
+
+      {historico.map((item) => (
+        <div className='historico-item' key={item.id}>
+          <p>
+            <strong>Valor:</strong>
+            {' '}
+            R$ {item.valorInicial}
+          </p>
+
+          <p>
+            <strong>Dias:</strong>
+            {' '}
+            {item.dias}
+          </p>
+
+          <p>
+            <strong>Taxa:</strong>
+            {' '}
+            {item.taxaAnual}%
+          </p>
+
+          <p>
+            <strong>Líquido</strong>
+            {' '}
+            R$ {item.liquido}
+          </p>
+        </div>
+      ))}
     </div>
   )
 }
