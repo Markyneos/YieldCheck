@@ -12,5 +12,6 @@ namespace BackendApi.Data;
         }
 
         public DbSet<Simulacao> Simulacoes { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 
