@@ -63,4 +63,35 @@ public class SimuladorService
             _ => 10m
         };
     }
+
+    public List<ComparacaoDTO> CompararInvestimentos(decimal valorInicial, int dias)
+    {
+        var investimentos = Enum.GetValues<TipoInvestimento>();
+
+        var resultado = new List<ComparacaoDTO>();
+
+        foreach (var investimento in investimentos)
+        {
+            decimal taxa = ObterTaxa(investimento);
+
+            decimal rendimentoBruto = valorInicial * (taxa / 100) * dias / 365;
+
+            decimal aliquota = ObterAliquotaIR(dias);
+
+            decimal imposto = investimento == TipoInvestimento.LCI ? 0 : rendimentoBruto * aliquota;
+
+            decimal liquido = valorInicial + rendimentoBruto - imposto;
+
+            resultado.Add(new ComparacaoDTO
+            {
+                Tipo = investimento.ToString(),
+                Taxa = taxa,
+                Liquido = liquido,
+                Imposto = imposto,
+                RendimentoBruto = rendimentoBruto
+            });
+        }
+
+        return resultado;
+    }
 }

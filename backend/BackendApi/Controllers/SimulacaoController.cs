@@ -50,4 +50,11 @@ namespace BackendApi.Controllers;
 
         return Ok(lista);
     }
+    [HttpGet("comparar")]
+    public IActionResult Comparar(decimal valorInicial, int dias)
+    {
+        var resultado = _service.CompararInvestimentos(valorInicial, dias);
+
+        return Ok(resultado);
+    }
 }

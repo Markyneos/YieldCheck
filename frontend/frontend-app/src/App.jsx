@@ -16,6 +16,7 @@ function App() {
   const [taxaAnual, setTaxaAnual] = useState('')
   const [resultado, setResultado] = useState(null)
   const [historico, setHistorico] = useState([])
+  const [comparacao, setComparacao] = useState([])
   const dadosGraficos = resultado ? [
     {
       nome: 'Inicial',
@@ -58,6 +59,16 @@ function App() {
     setHistorico(data)
   }
 
+  async function comparar() {
+    const response = await fetch(
+      `http://localhost:5000/api/simulacao/comparar?valorInicial=${valorInicial}&dias=${dias}`
+    )
+
+    const data = await response.json()
+
+    setComparacao(data)
+  }
+
   return (
     <div className='container'>
       <h1>YieldCheck</h1>
@@ -91,6 +102,10 @@ function App() {
 
       <button onClick={calcular}>
         Calcular
+      </button>
+
+      <button onClick={comparar}>
+        Comparar Investimentos
       </button>
 
       {resultado && (
@@ -176,6 +191,36 @@ function App() {
           </p>
         </div>
       ))}
+
+      {comparacao.length > 0 && (
+        <div className='resultado'>
+          <h2>Comparação</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Taxa</th>
+                <th>Líquido</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {comparacao.map((item) => (
+                <tr key={item.tipo}>
+                  <td>{item.tipo}</td>
+
+                  <td>{item.taxa}%</td>
+
+                  <td>
+                    R$ {item.liquido}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }
