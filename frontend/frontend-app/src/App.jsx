@@ -1,12 +1,32 @@
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts'
 import { useEffect, useState } from 'react'
 import './App.css'
 
 function App() {
+  const [tipoInvestimento, setTipoInvestimento] = useState(0)
   const [valorInicial, setValorInicial] = useState('')
   const [dias, setDias] = useState('')
   const [taxaAnual, setTaxaAnual] = useState('')
   const [resultado, setResultado] = useState(null)
   const [historico, setHistorico] = useState([])
+  const dadosGraficos = resultado ? [
+    {
+      nome: 'Inicial',
+      valor: Number(resultado.valorInicial)
+    },
+    {
+      nome: 'Líquido',
+      valor: Number(resultado.liquido)
+    }
+  ]
+    : []
 
   useEffect(() => {
     carregarHistorico()
@@ -21,7 +41,7 @@ function App() {
       body: JSON.stringify({
         valorInicial: Number(valorInicial),
         dias: Number(dias),
-        taxaAnual: Number(taxaAnual)
+        tipoInvestimento
       })
     })
 
@@ -54,11 +74,20 @@ function App() {
         onChange={(e) => setDias(e.target.value)}
       />
 
-      <input
-        placeholder='Taxa Anual (%)'
-        value={taxaAnual}
-        onChange={(e) => setTaxaAnual(e.target.value)}
-      />
+      <select
+        value={tipoInvestimento}
+        onChange={(e) =>
+          setTipoInvestimento(Number(e.target.value))}
+      >
+        <option value={0}>CDI</option>
+
+        <option value={1}>SELIC</option>
+
+        <option value={2}>LCI/LCA</option>
+
+        <option value={3}>CDB</option>
+
+      </select>
 
       <button onClick={calcular}>
         Calcular
@@ -75,6 +104,46 @@ function App() {
               R$ {resultado.liquido}
             </strong>
           </p>
+
+          <p>
+            Rendimento Bruto:
+            <strong>
+              {' '}
+              R$ {resultado.rendimentoBruto}
+            </strong>
+          </p>
+
+          <p>
+            Imposto:
+            <strong>
+              {' '}
+              R$ {resultado.imposto}
+            </strong>
+          </p>
+
+          <p>
+            Taxa aplicada:
+            <strong>
+              {' '}
+              {resultado.taxaAplicada}%
+            </strong>
+          </p>
+        </div>
+      )}
+
+      {resultado && (
+        <div className="resultado">
+          <h2>Gráfico</h2>
+
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={dadosGraficos}>
+              <XAxis dataKey="nome" />
+              <YAxis />
+              <Tooltip />
+
+              <Bar dataKey="valor" />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       )}
 
@@ -95,9 +164,9 @@ function App() {
           </p>
 
           <p>
-            <strong>Taxa:</strong>
+            <strong>Taxa aplicada:</strong>
             {' '}
-            {item.taxaAnual}%
+            {item.taxaAplicada}%
           </p>
 
           <p>

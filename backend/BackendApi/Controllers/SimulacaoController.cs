@@ -2,6 +2,7 @@
 using BackendApi.Data;
 using BackendApi.Models;
 using BackendApi.Services;
+using BackendApi.DTOs;
 
 namespace BackendApi.Controllers;
 
@@ -19,20 +20,25 @@ namespace BackendApi.Controllers;
     }
 
     [HttpPost]
-    public IActionResult Simular([FromBody] Simulacao request)
+    public IActionResult Simular([FromBody] SimulacaoRequestDTO request)
     {
-        decimal liquido = _service.Calcular(
-            request.ValorInicial,
-            request.Dias,
-            request.TaxaAnual
-            );
+        var resultado = _service.Calcular(request);
 
-        request.Liquido = liquido;
+        var simulacao = new Simulacao
+        {
+            ValorInicial = request.ValorInicial,
+            Dias = request.Dias,
+            TaxaAplicada = resultado.TaxaAplicada,
+            RendimentoBruto = resultado.RendimentoBruto,
+            Imposto = resultado.Imposto,
+            Liquido = resultado.Liquido
+        };
 
-        _context.Simulacoes.Add(request);
+        _context.Simulacoes.Add(simulacao);
+
         _context.SaveChanges();
 
-        return Ok(request);
+        return Ok(resultado);
     }
 
     [HttpGet]

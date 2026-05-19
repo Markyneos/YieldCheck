@@ -1,24 +1,66 @@
-﻿namespace BackendApi.Services
+﻿using BackendApi.DTOs;
+using BackendApi.Enums;
+
+namespace BackendApi.Services;
+
+public class SimuladorService
 {
-    public class SimuladorService
+    public SimulacaoResponseDTO Calcular(SimulacaoRequestDTO request)
     {
-        public decimal Calcular(decimal valor, int dias, decimal taxa)
+        decimal taxa = ObterTaxa(request.TipoInvestimento);
+        decimal rendimentoBruto =
+            request.ValorInicial *
+            (taxa / 100) *
+            request.Dias / 365;
+
+        decimal aliquota = ObterAliquotaIR(request.Dias);
+
+        decimal imposto =
+            request.TipoInvestimento == TipoInvestimento.LCI
+            ? 0
+            : rendimentoBruto * aliquota;
+
+        decimal liquido =
+            request.ValorInicial +
+            rendimentoBruto -
+            imposto;
+
+        return new SimulacaoResponseDTO
         {
-            decimal rendimento = valor * (taxa / 100) * dias / 365;
+            ValorInicial = request.ValorInicial,
+            RendimentoBruto = rendimentoBruto,
+            Imposto = imposto,
+            Liquido = liquido,
+            TaxaAplicada = taxa
+        };
+    }
 
-            decimal ir = ObterIR(dias);
-            decimal imposto = rendimento * ir;
-
-            return valor + rendimento - imposto;
-        }
-
-        private decimal ObterIR(int dias)
+    private decimal ObterAliquotaIR(int dias)
+    {
+        if (dias <= 180)
         {
-            if (dias <= 180) return 0.225m;
-            if (dias <= 360) return 0.20m;
-            if (dias <= 720) return 0.175m;
-
-            return 0.15m;
+            return 0.225m;
         }
+        if (dias <= 360)
+        {
+            return 0.20m;
+        }
+        if (dias <= 720)
+        {
+            return 0.175m;
+        }
+        return 0.15m;
+    }
+    private decimal ObterTaxa(TipoInvestimento tipo)
+    {
+        return tipo switch
+        {
+            TipoInvestimento.CDI => 13.15m,
+            TipoInvestimento.SELIC => 14.25m,
+            TipoInvestimento.LCI => 12.75m,
+            TipoInvestimento.CDB => 13.50m,
+
+            _ => 10m
+        };
     }
 }
