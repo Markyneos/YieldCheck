@@ -83,3 +83,4 @@ dist-ssr
 *.sln
 *.sw?
 frontend/frontend-app/src/backup.txt
+backend/BackendApi/backendapi.db*
